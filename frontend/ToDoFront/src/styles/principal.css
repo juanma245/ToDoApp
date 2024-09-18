@@ -6,8 +6,15 @@
     background-color: white;
 }
 
-.principalContent ul{
+.todoList{
     list-style: none;
+}
+
+.todoList li article{
+    display: grid;
+    grid-template-columns: 80% 20%;
+    margin-bottom: 20px;
+    padding: 10px;
 }
 
 .addContent{

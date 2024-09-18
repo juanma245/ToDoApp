@@ -1,6 +1,7 @@
 import { useState,useContext } from "react"
 import { HeaderComponent } from "./header"
 import { FooterComponent } from "./footer"
+import { ToDoCard } from "./toDoCard"
 import { generalContx } from "./context/generalContext"
 import agregarTodo from "./assets/agregar.svg"
 import "./styles/principal.css"
@@ -41,27 +42,19 @@ export function Principal(){
             <HeaderComponent/>
             <main className="principalContent">
                 <section>
-                    <ul>
+                    <ul className="todoList">
                         {listOption === "all" ? toDos.map((toDo) => 
                         <li key={toDo.id}>
-                            <article className={toDo.estado}>
-                                <h3>{toDo.nombre}</h3>
-                                <h3>{toDo.descripcion}</h3>
-                            </article>
+                            <ToDoCard state={toDo.estado} title={toDo.nombre} description={toDo.descripcion}/>
+                            
                         </li>) : null}
                         {listOption === "waiting" ? toDos.filter((toDo => toDo.estado === "waiting")).map((toDo) => 
                         <li key={toDo.id}>
-                            <article className={toDo.estado}>
-                                <h3>{toDo.nombre}</h3>
-                                <h3>{toDo.descripcion}</h3>
-                            </article>
+                            <ToDoCard state={toDo.estado} title={toDo.nombre} description={toDo.descripcion}/>
                         </li>) : null}
                         {listOption === "completed" ? toDos.filter((toDo => toDo.estado === "completed")).map((toDo) => 
                         <li key={toDo.id}>
-                            <article className={toDo.estado}>
-                                <h3>{toDo.nombre}</h3>
-                                <h3>{toDo.descripcion}</h3>
-                            </article>
+                            <ToDoCard state={toDo.estado} title={toDo.nombre} description={toDo.descripcion}/>
                         </li>) : null}
                         {adding ? <li>
                             <article>
