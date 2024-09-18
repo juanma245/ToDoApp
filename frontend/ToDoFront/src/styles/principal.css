@@ -1,0 +1,26 @@
+.principalContent{
+    height: min(100vh);
+}
+
+.principalContent ul li article{
+    background-color: white;
+}
+
+.principalContent ul{
+    list-style: none;
+}
+
+.addContent{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: gray;
+}
+
+.addContent img{
+    width: 25px;
+    height: 25px;
+    
+}
+
+
