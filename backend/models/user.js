@@ -1,11 +1,12 @@
 import bcrypt from 'bcrypt';
 import { pool } from '../database/conection.js';
+import { response } from 'express';
 
 export class userModel{
     static async getUsers(){
         try{
             const [results] = await pool.query(
-                'Select * from usuario where idUsuario = 0;' 
+                'Select * from usuario' 
             );
 
             return results
@@ -13,14 +14,12 @@ export class userModel{
             return "Error sql"
         }
         
-
-        
     }
 
     static async getUser(user){
         try{
             const [results] = await pool.execute(
-                'Select idUsuario from usuario where usuario = ?',[user]
+                'Select idUsuario,usuario,contrasenia from usuario where usuario = ?',[user]
             );
 
             return results
@@ -52,6 +51,7 @@ export class userModel{
         }
 
         const hashedPassword = await bcrypt.hash(password,10)
+
         try{
             const [results] = await pool.execute(
                 "insert into usuario(nombre,usuario,contrasenia) values(?,?,?);",[name,user,hashedPassword])
@@ -63,12 +63,30 @@ export class userModel{
         catch{
             throw new Error("Error sql")
         }
-        
-
-        
-        
+    
     }
 
-    
-    
+    static async login(user,password){
+        const userDb = await this.getUser(user)
+
+        if(userDb.length === 0){
+            throw new Error("El usuario no existe")
+        }
+
+        const valid = await bcrypt.compare(password,userDb[0].contrasenia)
+
+        if(!valid){
+            throw new Error("contraseña incorrecta")
+        }
+        
+        const response = {
+            "id" : userDb[0].idUsuario,
+            "username" : userDb[0].usuario
+
+        }
+
+        return response
+
+    }
+
 }
