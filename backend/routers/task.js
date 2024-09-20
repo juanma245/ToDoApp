@@ -26,3 +26,7 @@ taskRouter.post("/create",TaskController.createTask)
 
 taskRouter.get("/listTasks",TaskController.listTasks)
 
+taskRouter.patch("/editTask",TaskController.editTask)
+
+
+

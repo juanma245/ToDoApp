@@ -40,6 +40,15 @@ export class TaskController{
     }
 
     static async editTask(req,res){
+        const {idTask,title,description} = req.body
+
+        try{
+            const taskMessage = await TaskModel.editTask(idTask,title,description)
+
+            return res.status(200).json(taskMessage)
+        }catch(error){
+            return res.status(500).json({"message" : error.message})
+        }
 
     }
 
