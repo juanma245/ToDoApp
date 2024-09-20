@@ -63,8 +63,39 @@ export class TaskModel{
 
     }
 
-    static async deleteTask(){
+    static async userHaveTask(userId,idTask){
+        try{
+            const [results] = await pool.execute(
+                'select idTarea from tarea where usuario = ? and idTarea = ?',[userId,idTask]
+            )
 
+            if(results.length === 0){
+                return false
+            }
+
+            return true
+        }catch(err){
+            throw new Error(err.message)
+        }
+    }
+    
+    static async deleteTask(idTask,userId){
+        if(!this.userHaveTask(userId,idTask)){
+            throw new Error("El usuario no tiene permismos para esta tarea")   
+        }
+        try{
+            const [results] = await pool.execute(
+                "delete from tarea where idTarea = ?",[idTask]
+            )
+
+            if(results.affectedRows === 0){
+                throw new Error("error al eliminar")
+            }
+            
+            return {"messsage" : "tarea eliminada"}
+        }catch(err){
+            throw new Error(err.message)
+        }
     }
 
     static async changeState(){

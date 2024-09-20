@@ -41,7 +41,11 @@ export class TaskController{
 
     static async editTask(req,res){
         const {idTask,title,description} = req.body
+        const userId = req.session.userId
 
+        if(!userId){
+            return res.status(404).json({"message" : "no autorizado"})
+        }
         try{
             const taskMessage = await TaskModel.editTask(idTask,title,description)
 
@@ -52,8 +56,25 @@ export class TaskController{
 
     }
 
-    static async deleteTask(req,res){
+    
 
+
+    static async deleteTask(req,res){
+        const {idTask} = req.body
+        const userId = req.session.userId
+
+        if(!userId){
+            return res.status(404).json({"message" : "no autorizado"})
+        }
+
+        try{
+            const taskMessage = await TaskModel.deleteTask(idTask,userId)
+
+            return res.status(200).json(taskMessage)
+        }catch(err){
+            return res.status(500).json({"message" : err.message})
+        }
+        
     }
 
     static async changeState(req,res){

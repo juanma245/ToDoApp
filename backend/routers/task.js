@@ -28,5 +28,7 @@ taskRouter.get("/listTasks",TaskController.listTasks)
 
 taskRouter.patch("/editTask",TaskController.editTask)
 
+taskRouter.delete("/deleteTask",TaskController.deleteTask)
+
 
 
