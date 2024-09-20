@@ -1,8 +1,7 @@
 import bcrypt from 'bcrypt';
 import { pool } from '../database/conection.js';
-import { response } from 'express';
 
-export class userModel{
+export class UserModel{
     static async getUsers(){
         try{
             const [results] = await pool.query(
