@@ -69,13 +69,13 @@ export class UserModel{
         const userDb = await this.getUser(user)
 
         if(userDb.length === 0){
-            throw new Error("El usuario no existe")
+            throw new Error("Usuario o contraseña incorrecta")
         }
 
         const valid = await bcrypt.compare(password,userDb[0].contrasenia)
 
         if(!valid){
-            throw new Error("contraseña incorrecta")
+            throw new Error("usuario o contraseña incorrecta")
         }
         
         const response = {
