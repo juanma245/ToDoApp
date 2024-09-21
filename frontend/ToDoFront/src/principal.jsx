@@ -1,35 +1,34 @@
-import { useState,useContext } from "react"
+import { useState,useContext,useEffect } from "react"
 import { HeaderComponent } from "./header"
 import { FooterComponent } from "./footer"
 import { ToDoCard } from "./toDoCard"
 import { generalContx } from "./context/generalContext"
+import { useNavigate } from "react-router-dom"
 import agregarTodo from "./assets/agregar.svg"
+import axios from "axios"
 import "./styles/principal.css"
 
 export function Principal(){
     
-    const {listOption,adding,changeAdding} = useContext(generalContx)
+    const {listOption,adding,changeAdding,changeComplete} = useContext(generalContx)
+    const Navigate = useNavigate()
+    const [toDos,setToDos] = useState([{
+        idTarea : 0,
+        titulo : '',
+        descripcion : '',
+        estado : ''
+    }])
 
-    const [toDos,setToDos] = useState([
-        {
-            id : 1,
-            nombre : "tarea 1",
-            descripcion : "descripcion 1",
-            estado : "waiting"
-        },
-        {
-            id : 2,
-            nombre : "tarea 2",
-            descripcion : "descripcion 2",
-            estado : "waiting"
-        },
-        {
-            id : 3,
-            nombre : "tarea 3",
-            descripcion : "descripcion 3",
-            estado : "completed"
-        }
-    ])
+
+
+    useEffect(() => {
+        axios.get("http://127.0.0.1:3002/task//listTasks",{withCredentials : true})
+        .then(response => {
+            setToDos(response.data)
+        }).catch(() => {
+            Navigate("/login")
+        })
+    },[Navigate,changeComplete])
 
     const addToDo = (event) => {
         event.preventDefault()
@@ -44,23 +43,20 @@ export function Principal(){
                 <section>
                     <ul className="todoList">
                         {listOption === "all" ? toDos.map((toDo) => 
-                        <li key={toDo.id}>
-                            <ToDoCard state={toDo.estado} title={toDo.nombre} description={toDo.descripcion}/>
+                        <li key={toDo.idTarea}>
+                            <ToDoCard id = {toDo.idTarea} state={toDo.estado} title={toDo.titulo} description={toDo.descripcion}/>
                             
                         </li>) : null}
-                        {listOption === "waiting" ? toDos.filter((toDo => toDo.estado === "waiting")).map((toDo) => 
-                        <li key={toDo.id}>
-                            <ToDoCard state={toDo.estado} title={toDo.nombre} description={toDo.descripcion}/>
+                        {listOption === "pending" ? toDos.filter((toDo => toDo.estado === "pending")).map((toDo) => 
+                        <li key={toDo.idTarea}>
+                            <ToDoCard id = {toDo.idTarea} state={toDo.estado} title={toDo.titulo} description={toDo.descripcion}/>
                         </li>) : null}
                         {listOption === "completed" ? toDos.filter((toDo => toDo.estado === "completed")).map((toDo) => 
-                        <li key={toDo.id}>
-                            <ToDoCard state={toDo.estado} title={toDo.nombre} description={toDo.descripcion}/>
+                        <li key={toDo.idTarea}>
+                            <ToDoCard  id = {toDo.idTarea} state={toDo.estado} title={toDo.titulo} description={toDo.descripcion}/>
                         </li>) : null}
                         {adding ? <li>
-                            <article>
-                                <h3>preparando</h3>
-                                <h3>preparando</h3>
-                            </article>
+                            {listOption === "all" ? <ToDoCard id = {0} state="pending" title="" description="" edit/> : <ToDoCard id = {0} state={listOption} title="" description="" edit/> }
                         </li> : null}
                     
                     </ul>

@@ -6,9 +6,12 @@ import cors from 'cors';
 const app = express();
 const port = 3002;
 
+app.use(cors({
+  origin : 'http://localhost:5173',
+  credentials : true
+}))
 app.use(express.json())
 app.use(cookieParser())
-app.use(cors())
 app.use('/user',userRouter)
 app.use('/task',taskRouter)
 

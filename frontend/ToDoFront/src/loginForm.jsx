@@ -36,10 +36,10 @@ export function LoginForm(){
     };
 
     const logged = () => {
-        axios.post("http://127.0.0.1:3002/user/login",user)
-        .then(response => {
+        axios.post("http://127.0.0.1:3002/user/login",user,{withCredentials : true})
+        .then(() => {
             Navigate("/principal")
-        }).catch(error => {
+        }).catch(() => {
             sweetMessage("incorrecto","usuario o contraseña incorrecta","error")
         })
         

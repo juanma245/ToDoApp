@@ -31,10 +31,9 @@ export class TaskModel{
 
     static async editTask(id,title,description){
         
-        let sql = "update from tarea set"
+        let sql = ""
         let datos = []
 
-        
         if(title !== undefined && description !== undefined){
             sql = "update tarea set titulo = ?, descripcion = ? where idTarea = ?"
             datos = [title,description,id]

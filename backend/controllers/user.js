@@ -39,7 +39,10 @@ export class UserController{
 
             return res.cookie('access_token',token, {
                 httponly : true,
-                maxAge : 100 * 60 *60 
+                maxAge : 100 * 60 *60,
+                secure : true,
+                sameSite : "none" 
+                
             }).json({'access' : "autorizado"})
         }
         catch(err){

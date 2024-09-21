@@ -16,7 +16,7 @@ export function HeaderComponent(){
         <header>
             <div>
                 <h4 id="all" onClick={selectListOption}>Todas</h4>
-                <h4 id ="waiting" onClick={selectListOption}>Pendientes</h4>
+                <h4 id ="pending" onClick={selectListOption}>Pendientes</h4>
                 <h4 id ="completed" onClick={selectListOption}>Completadas</h4>
             </div>
         </header>

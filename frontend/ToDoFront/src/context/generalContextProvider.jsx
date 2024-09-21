@@ -8,6 +8,7 @@ export function GeneralContx({children}){
     const [loged,setLoged] = useState(false)
     const [listOption,setListOption] = useState("all")
     const [adding, setAdding] = useState(false)
+    const [changeComplete,setChangeComplete] = useState(true)
 
     const changeLoginOption = (option) => {
         setLoginOption(option)
@@ -25,6 +26,10 @@ export function GeneralContx({children}){
         setAdding(option)
     }
 
+    const changeChangeComplete = () => {
+        setChangeComplete(!changeComplete)
+    }
+
     return(
         <>
             <generalContx.Provider value={
@@ -33,10 +38,12 @@ export function GeneralContx({children}){
                     loged,
                     listOption,
                     adding,
+                    changeComplete,
                     changeLoginOption,
                     changeLoged,
                     changeListOption,
-                    changeAdding
+                    changeAdding,
+                    changeChangeComplete
                 }
             }>
                 {children}
