@@ -56,7 +56,7 @@ export class UserModel{
                 "insert into usuario(nombre,usuario,contrasenia) values(?,?,?);",[name,user,hashedPassword])
 
             if(results.affectedRows === 1){
-                return {'message' : "user created "}
+                return {'message' : "Usuario creado"}
             }
         }
         catch{
