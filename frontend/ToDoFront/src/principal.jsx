@@ -56,7 +56,7 @@ export function Principal(){
                             <ToDoCard  id = {toDo.idTarea} state={toDo.estado} title={toDo.titulo} description={toDo.descripcion}/>
                         </li>) : null}
                         {adding ? <li>
-                            {listOption === "all" ? <ToDoCard id = {0} state="pending" title="" description="" edit/> : <ToDoCard id = {0} state={listOption} title="" description="" edit/> }
+                            {listOption === "all" ? <ToDoCard id = {0} state="pending" title="" description="" edit create/> : <ToDoCard id = {0} state={listOption} title="" description="" edit/> }
                         </li> : null}
                     
                     </ul>

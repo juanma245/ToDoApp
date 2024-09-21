@@ -3,7 +3,6 @@ import { TaskModel } from "../models/task.js";
 export class TaskController{
     static async listTasks(req,res){
         const userId = req.session.userId
-        console.log(userId)
         if(userId === null){
             return res.status(401).json({"message" : "no autorizado"})
         }

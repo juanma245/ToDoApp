@@ -7,28 +7,38 @@ import guardar from "./assets/disco.svg"
 import cancelar from "./assets/eliminar-documento.svg"
 import desmarcar from "./assets/circulo-marca-x.svg"
 import axios from "axios"
+import Swal from 'sweetalert2'
 
 import "./styles/todoCard.css"
 import { generalContx } from "./context/generalContext";
 
-export function ToDoCard({title,description,state,id,edit}){
-    const {changeChangeComplete} = useContext(generalContx)
+export function ToDoCard({title,description,state,id,edit,create}){
+    const {changeChangeComplete,changeAdding} = useContext(generalContx)
     const [editing,setEditing] = useState(edit)
     
-    const [taskEdit,setTaskEdit] = useState({
-        title : '',
-        description : ''
-    })
-
     const[taskCardValues,setTaskCardValues] = useState({
+        idTask : id,
         title : title,
         description : description,
+        state : state,
         edit : edit
 
     })
+
+    const [taskEdit,setTaskEdit] = useState({
+        title : taskCardValues.title,
+        description : taskCardValues.description
+    })
+
+    const sweetMessage = (title,text,icon) => {
+        Swal.fire({
+            title : title,
+            text: text,
+            icon: icon,
+            timer: 3000
+        })
+    }
     
-
-
     const editTarea = () => {
         setEditing(true)
     }
@@ -52,28 +62,28 @@ export function ToDoCard({title,description,state,id,edit}){
     };
 
 
-    const createTask = (event) => {
-        event.preventDefault()
+    const editTask = () => {
         let type = 0
         let datos = {}
-        if(taskEdit.title.length === 0 && taskEdit.description.length !== 0){
+
+        if(taskEdit.title === taskCardValues.title && taskEdit.description !== taskCardValues.description){
             type = 1
             datos = {
-                idTask : id,
+                idTask : taskCardValues.idTask,
                 description : taskEdit.description
             }
         }
-        else if(taskEdit.title.length !== 0 && taskEdit.description.length === 0){
+        else if(taskEdit.title !== taskCardValues.title && taskEdit.description === taskCardValues.description){
             type = 2
             datos = {
-                idTask : id,
+                idTask : taskCardValues.idTask,
                 title : taskEdit.title
             }
         }
-        else if(taskEdit.title.length !== 0 && taskEdit.description.length !== 0){
+        else if(taskEdit.title !== taskCardValues.title && taskEdit.description !== taskCardValues.description){
             type = 3
             datos = {
-                idTask : id,
+                idTask : taskCardValues.idTask,
                 title : taskEdit.title,
                 description : taskEdit.description
             }
@@ -98,6 +108,48 @@ export function ToDoCard({title,description,state,id,edit}){
             changeChangeComplete()
             
         })
+    }
+
+    const createTask = () => {
+        
+
+        
+            const datos = {
+                title : taskEdit.title,
+                description : taskEdit.description,
+                state : taskCardValues.state
+            }
+            console.log(datos.state)
+            axios.post("http://127.0.0.1:3002/task/create",datos,{withCredentials:true})
+            .then((response) => {
+                console.log(response.data)
+                handleTaskCardValuesChange("idTask",response.data.idCreated)
+                handleTaskCardValuesChange("title",taskEdit.title)
+                handleTaskCardValuesChange("description",taskCardValues.description)
+
+                setEditing(false)
+                changeChangeComplete()
+                changeAdding(false)
+            })
+
+
+    }
+
+    const selectOption = (event) => {
+        event.preventDefault()
+
+        if(taskEdit.title.length === 0){
+            sweetMessage("Invalido","Por favor introduzca un nombre para la tarea","error")
+        }
+        else{
+            if(create){
+                createTask()
+            }
+            else{
+                editTask()
+            }
+        }
+        
     }
 
 
@@ -129,7 +181,7 @@ export function ToDoCard({title,description,state,id,edit}){
             <div className="todoCardOptions">
                 {editing ? 
                 <>
-                    <img src={guardar} alt="" onClick={createTask} />
+                    <img src={guardar} alt="" onClick={selectOption} />
                     <img src={cancelar} onClick={cancelEdit} alt="" />
                 </> : 
                 <>
@@ -150,6 +202,7 @@ ToDoCard.propTypes = {
     description : PropTypes.string.isRequired,
     state : PropTypes.string.isRequired,
     id : PropTypes.number.isRequired,
-    edit : PropTypes.bool
+    edit : PropTypes.bool,
+    create : PropTypes.bool
 
   };
