@@ -152,6 +152,30 @@ export function ToDoCard({title,description,state,id,edit,create}){
         
     }
 
+    const changeTask = (event) => {
+        event.preventDefault()
+
+        let datos = {}
+
+        if(event.target.className === "com"){
+            datos = {
+                idTask : taskCardValues.idTask,
+                state : "pending"
+            }
+        }
+        else if(event.target.className === "pen"){
+            datos = {
+                idTask : taskCardValues.idTask,
+                state : "completed"
+            }
+        }
+
+        axios.patch("http://127.0.0.1:3002/task/changeState",datos,{withCredentials : true})
+        .then(() => {
+            changeChangeComplete()
+        })
+    }
+
 
     return(
         <article className={state} >
@@ -185,7 +209,7 @@ export function ToDoCard({title,description,state,id,edit,create}){
                     <img src={cancelar} onClick={cancelEdit} alt="" />
                 </> : 
                 <>
-                    {state === "completed" ? <img src={desmarcar} alt="" /> : <img src={completar} alt="" />}
+                    {state === "completed" ? <img className = "com" src={desmarcar} onClick={changeTask}alt="" /> : <img className="pen" src={completar} onClick={changeTask} alt="" />}
                     <img src={editar} onClick={editTarea} alt="" />
                     <img src={eliminar} alt="" />
                 </>}
