@@ -24,8 +24,10 @@
 
 .waiting{
     border: 5px solid red;
+    border-radius: 20px;
 }
 
 .completed{
     border: 5px solid green;
+    border-radius: 20px;
 }

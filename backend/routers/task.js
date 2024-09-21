@@ -22,11 +22,13 @@ taskRouter.use((req,res,next) => {
     next()
 })
 
-taskRouter.post("/create",TaskController.createTask)
-
 taskRouter.get("/listTasks",TaskController.listTasks)
 
+taskRouter.post("/create",TaskController.createTask)
+
 taskRouter.patch("/editTask",TaskController.editTask)
+
+taskRouter.patch("/changeState",TaskController.changeState)
 
 taskRouter.delete("/deleteTask",TaskController.deleteTask)
 

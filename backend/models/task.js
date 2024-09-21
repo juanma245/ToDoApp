@@ -98,7 +98,23 @@ export class TaskModel{
         }
     }
 
-    static async changeState(){
+    static async changeState(idTask,state,userId){
+        if(!this.userHaveTask(userId,idTask)){
+            throw new Error("El usuario no tiene permismos para esta tarea")   
+        }
+        try{
+            const [results] = await pool.execute(
+                "update tarea set estado = ? where idTarea = ?",[state,idTask]
+            )
+
+            if(results.affectedRows === 0){
+                throw new Error("error al cambiar de estado ")
+            }
+            
+            return {"messsage" : "Estado cambiado"}
+        }catch(err){
+            throw new Error(err.message)
+        }
 
     }
 }

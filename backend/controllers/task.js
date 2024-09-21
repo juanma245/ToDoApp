@@ -78,6 +78,20 @@ export class TaskController{
     }
 
     static async changeState(req,res){
-        
+        const {idTask,state} = req.body
+        const userId = req.session.userId
+
+        if(!userId){
+            return res.status(404).json({"message" : "no autorizado"})
+        }
+
+        try{
+            const taskMessage = await TaskModel.changeState(idTask,state,userId)
+            
+            return res.status(200).json(taskMessage)
+        }
+        catch(err){
+            return res.status(500).json({"message" : err.message})
+        }
     }
 }

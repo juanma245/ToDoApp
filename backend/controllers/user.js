@@ -11,7 +11,6 @@ export class UserController{
 
     static async createUser(req,res){
         try{
-            console.log('Datos recibidos:', req.body); 
 
             const {name,user,password } = req.body
 

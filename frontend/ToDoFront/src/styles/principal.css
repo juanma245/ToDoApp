@@ -3,7 +3,9 @@
 }
 
 .principalContent ul li article{
-    background-color: white;
+    background-color: #b6ffff  ;
+    width: 95%;
+    
 }
 
 .todoList{
@@ -21,7 +23,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: gray;
+
 }
 
 .addContent img{
