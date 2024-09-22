@@ -44,6 +44,7 @@ export function ToDoCard({title,description,state,id,edit,create}){
     }
     const cancelEdit = () => {
         setEditing(false)
+        changeAdding(false)
     }
 
     const handleTaskEditChange = (event) => {
@@ -176,6 +177,29 @@ export function ToDoCard({title,description,state,id,edit,create}){
         })
     }
 
+    const deleteTask = async(event) => {
+        event.preventDefault()
+        const result = await Swal.fire({
+            title: 'Eliminar tarea',
+            text: "¿Esta seguro de querer eliminar para siempre esta tarea?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Sí',
+            cancelButtonText: 'No'
+        })
+        if (result.isConfirmed) {
+            const datos = {
+                idTask : taskCardValues.idTask
+            }
+
+            axios.delete("http://127.0.0.1:3002/task/deleteTask",{withCredentials : true,data : datos})
+            .then(() => {
+                changeChangeComplete()
+            })
+          } 
+    }
+
+
 
     return(
         <article className={state} >
@@ -211,7 +235,7 @@ export function ToDoCard({title,description,state,id,edit,create}){
                 <>
                     {state === "completed" ? <img className = "com" src={desmarcar} onClick={changeTask}alt="" /> : <img className="pen" src={completar} onClick={changeTask} alt="" />}
                     <img src={editar} onClick={editTarea} alt="" />
-                    <img src={eliminar} alt="" />
+                    <img src={eliminar} onClick={deleteTask} alt="" />
                 </>}
 
                 

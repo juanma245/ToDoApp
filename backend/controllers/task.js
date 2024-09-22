@@ -63,7 +63,7 @@ export class TaskController{
         const userId = req.session.userId
 
         if(!userId){
-            return res.status(404).json({"message" : "no autorizado"})
+            return res.status(401).json({"message" : "no autorizado"})
         }
 
         try{

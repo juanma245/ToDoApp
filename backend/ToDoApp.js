@@ -8,6 +8,7 @@ const port = 3002;
 
 app.use(cors({
   origin : 'http://localhost:5173',
+  methods: ['GET', 'POST', 'DELETE', 'PUT','OPTIONS','PATCH'],
   credentials : true
 }))
 app.use(express.json())
