@@ -1,4 +1,5 @@
 import { useState,useContext } from "react"
+import { generalContx } from "./context/generalContext";
 import PropTypes from 'prop-types';
 import completar from "./assets/caja.svg"
 import editar from "./assets/editar.svg"
@@ -8,14 +9,15 @@ import cancelar from "./assets/eliminar-documento.svg"
 import desmarcar from "./assets/circulo-marca-x.svg"
 import axios from "axios"
 import Swal from 'sweetalert2'
-
 import "./styles/todoCard.css"
-import { generalContx } from "./context/generalContext";
+
 
 export function ToDoCard({title,description,state,id,edit,create}){
     const {changeChangeComplete,changeAdding} = useContext(generalContx)
+    //Estado para saber si se esta editando la tarea 
     const [editing,setEditing] = useState(edit)
     
+    //Estado que guarda los valores que se muestran en la tarjeta, se hizo así para poder hacerlo dinámico 
     const[taskCardValues,setTaskCardValues] = useState({
         idTask : id,
         title : title,
@@ -25,10 +27,12 @@ export function ToDoCard({title,description,state,id,edit,create}){
 
     })
 
+    //Estado que guarda los datos que se estan editando 
     const [taskEdit,setTaskEdit] = useState({
         title : taskCardValues.title,
         description : taskCardValues.description
     })
+
 
     const sweetMessage = (title,text,icon) => {
         Swal.fire({
@@ -39,14 +43,18 @@ export function ToDoCard({title,description,state,id,edit,create}){
         })
     }
     
+    //Función para indicar que se está editando una tarea
     const editTarea = () => {
         setEditing(true)
     }
+
+    //Función para indicar que se canceló la edición de la tarea 
     const cancelEdit = () => {
         setEditing(false)
         changeAdding(false)
     }
 
+    //Función para manejar los cambios en el estado taskEdit
     const handleTaskEditChange = (event) => {
         const { name, value } = event.target;
         setTaskEdit({
@@ -55,6 +63,7 @@ export function ToDoCard({title,description,state,id,edit,create}){
             });
     };
 
+    //Función para manejar los cambios en el estado taskCardValues
     const handleTaskCardValuesChange = (name,value) => {
         setTaskCardValues({
             ...taskCardValues,
@@ -62,11 +71,12 @@ export function ToDoCard({title,description,state,id,edit,create}){
             });
     };
 
-
+    //Función para editar la tarea
     const editTask = () => {
         let type = 0
         let datos = {}
 
+        //Comprobación para saber que datos se enviaran en la petición
         if(taskEdit.title === taskCardValues.title && taskEdit.description !== taskCardValues.description){
             type = 1
             datos = {
@@ -90,10 +100,12 @@ export function ToDoCard({title,description,state,id,edit,create}){
             }
         }
         else{
+            //En caso de que no se haya realizado ningun cambio
             setEditing(false)
         }
         axios.patch("http://127.0.0.1:3002/task/editTask",datos,{withCredentials : true})
         .then(() => {
+            //Comprobacion para cambiar los datos mostrados en la tarjeta
             if(type === 1){
                 handleTaskCardValuesChange("description",taskEdit.description)
             }
@@ -111,38 +123,39 @@ export function ToDoCard({title,description,state,id,edit,create}){
         })
     }
 
+    //Función para crear una tarea
     const createTask = () => {
-        
+        //Datos que se envían a la petición 
+        const datos = {
+            title : taskEdit.title,
+            description : taskEdit.description,
+            state : taskCardValues.state
+        }
 
-        
-            const datos = {
-                title : taskEdit.title,
-                description : taskEdit.description,
-                state : taskCardValues.state
-            }
-            console.log(datos.state)
-            axios.post("http://127.0.0.1:3002/task/create",datos,{withCredentials:true})
-            .then((response) => {
-                console.log(response.data)
-                handleTaskCardValuesChange("idTask",response.data.idCreated)
-                handleTaskCardValuesChange("title",taskEdit.title)
-                handleTaskCardValuesChange("description",taskCardValues.description)
+        axios.post("http://127.0.0.1:3002/task/create",datos,{withCredentials:true})
+        .then((response) => {
+            //Actualización de los datos que se muestran en la tarjeta
+            handleTaskCardValuesChange("idTask",response.data.idCreated)
+            handleTaskCardValuesChange("title",taskEdit.title)
+            handleTaskCardValuesChange("description",taskCardValues.description)
 
-                setEditing(false)
-                changeChangeComplete()
-                changeAdding(false)
-            })
+            setEditing(false)
+            changeChangeComplete()
+            changeAdding(false)
+        })
 
 
     }
 
+    //Función para saber si se está editando o creando una tarea
     const selectOption = (event) => {
         event.preventDefault()
-
+        //Se valida que la tarea no quede sin titulo 
         if(taskEdit.title.length === 0){
             sweetMessage("Invalido","Por favor introduzca un nombre para la tarea","error")
         }
         else{
+            //Se usa la bandera create para saber si es una edición o una creación  
             if(create){
                 createTask()
             }
@@ -153,11 +166,13 @@ export function ToDoCard({title,description,state,id,edit,create}){
         
     }
 
+    //Función para cambiar el estado de una tarea
     const changeTask = (event) => {
         event.preventDefault()
 
         let datos = {}
 
+        //Según la clase se sabe si la tarea esta completada o pendiente
         if(event.target.className === "com"){
             datos = {
                 idTask : taskCardValues.idTask,
@@ -177,11 +192,13 @@ export function ToDoCard({title,description,state,id,edit,create}){
         })
     }
 
+    //Función para eliminar una tarea
     const deleteTask = async(event) => {
         event.preventDefault()
+        //Comprobación de seguridad
         const result = await Swal.fire({
             title: 'Eliminar tarea',
-            text: "¿Esta seguro de querer eliminar para siempre esta tarea?",
+            text: "¿Está seguro de querer eliminar para siempre esta tarea?",
             icon: 'warning',
             showCancelButton: true,
             confirmButtonText: 'Sí',
@@ -198,8 +215,6 @@ export function ToDoCard({title,description,state,id,edit,create}){
             })
           } 
     }
-
-
 
     return(
         <article className={state} >

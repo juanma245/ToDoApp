@@ -2,11 +2,14 @@ import { TaskModel } from "../models/task.js";
 
 export class TaskController{
     static async listTasks(req,res){
+        //Se obtiene el userId desde la session creada en el middlewere
         const userId = req.session.userId
+        //Se comprueba si hay una sesión activa
         if(userId === null){
             return res.status(401).json({"message" : "no autorizado"})
         }
 
+        //Bloque donde se hace la llamada al modelo 
         try {
             const task = await TaskModel.listTasks(userId)
 

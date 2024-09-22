@@ -1,7 +1,9 @@
 import { pool } from "../database/conection.js";
 
 export class TaskModel{
+    //Funcion para listar tareas de usuario
     static async listTasks(id){
+        //bloque de codigo para ejecutar una consulta
         try{
             const [results] = await pool.execute(
                 'select idTarea,titulo,descripcion,estado from tarea where usuario = ?;',[id]
@@ -14,6 +16,7 @@ export class TaskModel{
         }
     }
 
+    //Funcion para crear una tarea
     static async createTask(id,title,description,state){
         try{
             const [results] = await pool.execute(
@@ -23,17 +26,20 @@ export class TaskModel{
                 throw new Error("Fallo en la creacion ")
             }
 
+            //Se devuelve la id que se creo 
             return {"idCreated" : results.insertId}
         }catch(err){
             throw new Error(err.message)
         }
     }
 
+    //Funcion para editar la tarea
     static async editTask(id,title,description){
         
         let sql = ""
         let datos = []
 
+        //condicionales, para defirnir que consulta seria la mejor en base a los datos recibidos
         if(title !== undefined && description !== undefined){
             sql = "update tarea set titulo = ?, descripcion = ? where idTarea = ?"
             datos = [title,description,id]
@@ -62,6 +68,7 @@ export class TaskModel{
 
     }
 
+    //Funcion para saber si un usuario tiene permisos para editar y eliminar una tarea
     static async userHaveTask(userId,idTask){
         try{
             const [results] = await pool.execute(
@@ -78,7 +85,9 @@ export class TaskModel{
         }
     }
     
+    //Funcion para eliminar una tarea
     static async deleteTask(idTask,userId){
+        //Se comprueba si el usuario puede modificar la tarea
         if(!this.userHaveTask(userId,idTask)){
             throw new Error("El usuario no tiene permismos para esta tarea")   
         }
@@ -97,6 +106,7 @@ export class TaskModel{
         }
     }
 
+    //Funcion para marcar como completado o pendiente
     static async changeState(idTask,state,userId){
         if(!this.userHaveTask(userId,idTask)){
             throw new Error("El usuario no tiene permismos para esta tarea")   

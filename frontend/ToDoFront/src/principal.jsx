@@ -1,17 +1,19 @@
 import { useState,useContext,useEffect } from "react"
+import { useNavigate } from "react-router-dom"
 import { HeaderComponent } from "./header"
 import { FooterComponent } from "./footer"
 import { ToDoCard } from "./toDoCard"
 import { generalContx } from "./context/generalContext"
-import { useNavigate } from "react-router-dom"
 import agregarTodo from "./assets/agregar.svg"
 import axios from "axios"
 import "./styles/principal.css"
 
 export function Principal(){
     
+    //Uso del contexto 
     const {listOption,adding,changeAdding,changeComplete} = useContext(generalContx)
     const Navigate = useNavigate()
+    //Estado para guardar la lista de tareas
     const [toDos,setToDos] = useState([{
         idTarea : 0,
         titulo : '',
@@ -19,17 +21,18 @@ export function Principal(){
         estado : ''
     }])
 
-
-
+    //Se obtienen la lista de tareas, esto se hace al cargar la página, y cada vez que se complete un cambio 
     useEffect(() => {
         axios.get("http://127.0.0.1:3002/task//listTasks",{withCredentials : true})
         .then(response => {
             setToDos(response.data)
         }).catch(() => {
+            //En caso de error ir al login
             Navigate("/login")
         })
     },[Navigate,changeComplete])
 
+    //Función para indicar que se está añadiendo una tarea nueva
     const addToDo = (event) => {
         event.preventDefault()
         changeAdding(true)

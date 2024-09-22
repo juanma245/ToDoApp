@@ -7,6 +7,7 @@ import { FooterComponent } from "./footer";
 import "./styles/login.css"
 export function Login(){
     
+    //uso del contexto
     const {loginOption} = useContext(generalContx)
 
     return(

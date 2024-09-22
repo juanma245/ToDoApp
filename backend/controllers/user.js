@@ -14,10 +14,6 @@ export class UserController{
 
             const {name,user,password } = req.body
 
-            if (!name || !user || !password) {
-                return res.status(400).json({ error: 'Faltan datos' });
-            }
-
             const response = await UserModel.createUser(name,user,password)
 
             return res.json(response)
@@ -33,10 +29,12 @@ export class UserController{
         try{
             const userDb = await UserModel.login(user,password)
 
+            //Creación del token jwt
             const token = jwt.sign({id : userDb.id,username : userDb.username},SECRET,{
                 expiresIn : '1h'
             })
 
+            //Se añade el token a una cookie, la cual será enviada a los endpoint de tareas
             return res.cookie('access_token',token, {
                 httponly : true,
                 maxAge : 1000 * 60 * 60,

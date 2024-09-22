@@ -4,13 +4,16 @@
 
 .principalContent ul li article{
     background-color: #b6ffff  ;
-    width: 95%;
+    width: 98%;
     
 }
 
 .todoList{
     list-style: none;
+    padding: 10px;
 }
+
+
 
 .todoList li article{
     display: grid;
@@ -30,6 +33,12 @@
     width: 25px;
     height: 25px;
     
+}
+
+@media (max-width : 500px){
+    .todoList{
+        padding: 0;
+    }
 }
 
 

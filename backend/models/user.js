@@ -15,6 +15,7 @@ export class UserModel{
         
     }
 
+    //Función para obtener los datos del usuario 
     static async getUser(user){
         try{
             const [results] = await pool.execute(
@@ -28,6 +29,7 @@ export class UserModel{
         
     }
 
+    //Función para comprobar si un usuario esta en uso 
     static async existUser(user){
         try{
             const [results] = await pool.execute(
@@ -43,12 +45,15 @@ export class UserModel{
         }
     }
 
+    //Función para crear un usuario 
     static async createUser(name, user, password){
         
+        //Se comprueba si el usuario existe
         if(await this.existUser(user)){
             throw new Error("el usuario ya existe")
         }
 
+        //Se encripta la contraseña
         const hashedPassword = await bcrypt.hash(password,10)
 
         try{
@@ -65,19 +70,25 @@ export class UserModel{
     
     }
 
+
+    //Función para iniciar sesión 
     static async login(user,password){
+        //Se obtienen los datos del usuario ingresado 
         const userDb = await this.getUser(user)
 
+        //Se comprueba si en verdad existe el usuario 
         if(userDb.length === 0){
             throw new Error("Usuario o contraseña incorrecta")
         }
 
+        //Se valida si la contraseña es correcta 
         const valid = await bcrypt.compare(password,userDb[0].contrasenia)
 
         if(!valid){
             throw new Error("usuario o contraseña incorrecta")
         }
         
+        //Se devuelven los datos de la sesión 
         const response = {
             "id" : userDb[0].idUsuario,
             "username" : userDb[0].usuario

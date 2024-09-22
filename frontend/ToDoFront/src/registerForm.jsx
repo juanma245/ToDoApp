@@ -8,13 +8,15 @@ import Swal from 'sweetalert2'
 export function SinginForm(){
 
     const {changeLoginOption} = useContext(generalContx)
+    //Estado que guarda los datos del nuevo usuario 
     const [user,setUser] = useState({
         name : '',
         user : '',
         password : '',
     })
     
-    const seleccionar = () => {
+    //Función para cancelar el registro 
+    const cancel = () => {
         setUser({
             name : '',
             user : '',
@@ -32,6 +34,7 @@ export function SinginForm(){
         })
     }
 
+    //Función para manejar los cambios en el estado del usuario 
     const handleUserChange = (event) => {
         const { name, value } = event.target;
         setUser({
@@ -40,13 +43,19 @@ export function SinginForm(){
             });
     };
 
+    //Función para crear un usuario 
     const cerateUser = async() => {
         axios.post("http://127.0.0.1:3002/user/create",user)
                 .then(response => {
                     sweetMessage(response.data.message,"Se creo el usuario, por favor ingrese","success")
+                    //Se cambia el estado para mostrar el formulario del login 
                     changeLoginOption(0)
+                }).catch((error) => {
+                    sweetMessage("error", error.response.data.message,"erro")
                 })
     }
+
+    //Se validan las entradas del usuario
     const validRegister = (event) => {
         event.preventDefault()
 
@@ -90,7 +99,7 @@ export function SinginForm(){
                     onChange={handleUserChange}/>
 
                 <button type="submit">Registrar</button>
-                <button onClick={seleccionar}>Cancelar</button>
+                <button onClick={cancel}>Cancelar</button>
             </form>
         </>
     )
